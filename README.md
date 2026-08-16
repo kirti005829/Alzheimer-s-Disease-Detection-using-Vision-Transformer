@@ -1,40 +1,5 @@
-# Alzheimers-Detection-ViT
-## Introduction
-The notebook `ViT_Based_Alzheimer_Classifier.ipynb` provides a step-by-step guide to classifying brain MRI images into different categories related to Alzheimer's Disease. The core of the solution is a Vision Transformer (ViT) model, pre-trained on the ImageNet-1K dataset, which is then fine-tuned for this specific classification task. This approach leverages the powerful feature extraction capabilities of large-scale pre-trained models.
+I wanted to build a project that not only performs image classification but also demonstrates how deep learning models can be used in real-world healthcare applications. For this project, I used a Vision Transformer (ViT) to classify brain MRI scans into Alzheimer's Disease, Cognitively Impaired, and Cognitively Normal categories.
 
-***
+While working on this project, I implemented the complete training pipeline, including data preprocessing, model training, evaluation, checkpoint saving, and inference. To make the predictions more interpretable, I added Grad-CAM visualization, which highlights the important regions of an MRI scan that influenced the model's decision. I also developed a FastAPI backend to expose prediction APIs, making the model easier to integrate into future web applications.
 
-## Dataset
-The project uses a custom dataset of brain MRI images. The dataset is structured into three classes:
-- **AD**: Alzheimer's Disease
-- **CI**: Cognitive Impairment
-- **CN**: Cognitively Normal
-## Model Architecture
-The classifier is based on the Vision Transformer (ViT) architecture. Specifically, it uses `vit_b_16` from `torchvision.models`.
-
-The pre-trained ViT model, originally trained on ImageNet-1K, is adapted for this 3-class classification problem by replacing the final classification head.
-- **Backbone**: `ViT_B_16_Weights.IMAGENET1K_V1`
-- **New Head**: A custom `nn.Linear` layer with an output size of 3, corresponding to the three classes (AD, CI, CN).
-
-The model is trained using:
-- **Loss Function**: Cross-Entropy Loss (`nn.CrossEntropyLoss`)
-- **Optimizer**: AdamW (`optim.AdamW`)
-- **Learning Rate**: $1e-4$
-- **Weight Decay**: 0.01
-- **Epochs**: 5
-
-***## Dependencies
-The following libraries are required to run the notebook:
-- `zipfile`
-- `os`
-- `matplotlib`
-- `numpy`
-- `torch`
-- `torchvision`
-- `torch.nn`
-- `torch.optim`
-- `seaborn`
-- `pandas`
-- `PIL`
-
-The notebook assumes a GPU is available and will use it if `torch.cuda.is_available()` returns `True`.
+This project gave me hands-on experience with PyTorch, transfer learning, Vision Transformers, medical image classification, model explainability, and backend deployment. It also helped me understand the challenges involved in building an end-to-end AI application rather than just training a machine learning model.

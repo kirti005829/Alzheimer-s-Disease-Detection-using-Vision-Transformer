@@ -12,19 +12,12 @@ from utils.transforms import get_transforms
 
 CLASS_NAMES = ["AD", "CI", "CN"]
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 def reshape_transform(tensor, height=14, width=14):
-    """
-    Convert ViT output tokens into CNN-like feature maps.
 
-    Input shape:
-        (B, 197, 768)
-
-    Output shape:
-        (B, 768, 14, 14)
-    """
-
-    tensor = tensor[:, 1:, :]        # Remove CLS token
+    tensor = tensor[:, 1:, :]
 
     tensor = tensor.reshape(
         tensor.size(0),
@@ -41,13 +34,15 @@ def reshape_transform(tensor, height=14, width=14):
     )
 
     return tensor
+
+
 def load_model():
 
     model = create_model()
 
     checkpoint = torch.load(
         "checkpoints/best_model.pth",
-        map_location="cpu"
+        map_location=DEVICE
     )
 
     if "model_state_dict" in checkpoint:
@@ -60,9 +55,13 @@ def load_model():
 
         model.load_state_dict(checkpoint)
 
+    model.to(DEVICE)
+
     model.eval()
 
     return model
+
+
 def generate_gradcam(image_path):
 
     model = load_model()
@@ -81,9 +80,12 @@ def generate_gradcam(image_path):
 
     image = Image.open(image_path).convert("RGB")
 
-    rgb_image = np.array(image).astype(np.float32) / 255
+    # Resize original image to model input size
+    image = image.resize((224, 224))
 
-    input_tensor = test_transform(image).unsqueeze(0)
+    rgb_image = np.array(image).astype(np.float32) / 255.0
+
+    input_tensor = test_transform(image).unsqueeze(0).to(DEVICE)
 
     grayscale_cam = cam(
         input_tensor=input_tensor
@@ -103,9 +105,12 @@ def generate_gradcam(image_path):
         )
     )
 
-    print("Grad-CAM saved!")
+    print("Grad-CAM saved successfully!")
+    print("Saved to: results/gradcam_output.png")
+
+
 if __name__ == "__main__":
 
     generate_gradcam(
-        "data/dataset/test/AD/YOUR_IMAGE_NAME.jpg"
+        "data/dataset/test/CI/CI126_S_1340a097.png"
     )

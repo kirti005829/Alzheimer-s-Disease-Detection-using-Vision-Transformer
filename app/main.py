@@ -1,39 +1,21 @@
-from fastapi import FastAPI, UploadFile, File
-from PIL import Image
-import os
-import shutil
+from fastapi import FastAPI
 
-UPLOAD_DIR = "uploads"
+from app.database import Base
+from app.database import engine
 
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-from app.predictor import predict
+from app.routers import auth
+from app.routers import predict
+from app.routers import history
+from app.routers import gradcam
 
 app = FastAPI(
     title="Alzheimer Detection API",
     version="1.0"
 )
 
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-def home():
-
-    return {
-        "status": "Running",
-        "model": "Vision Transformer",
-        "classes": ["AD", "CI", "CN"]
-    }
-
-
-@app.post("/predict")
-async def predict_image(file: UploadFile = File(...)):
-
-    file_path = os.path.join(UPLOAD_DIR,file.filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    image = Image.open(file_path)
-
-    result = predict(image)
-
-    return result
+app.include_router(auth.router)
+app.include_router(predict.router)
+app.include_router(history.router)
+app.include_router(gradcam.router) 

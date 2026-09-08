@@ -22,3 +22,11 @@ results/
 # System files
 .DS_Store
 Thumbs.db
+# Database
+*.db
+
+# Uploaded Images
+uploads/
+
+# Environment Variables
+.env

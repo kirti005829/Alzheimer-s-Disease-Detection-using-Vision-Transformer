@@ -4,18 +4,18 @@ from fastapi import HTTPException
 
 from sqlalchemy.orm import Session
 
-from app.dependencies import get_db
+from app.database import get_db
 from app.schemas import (
     UserRegister,
     UserLogin,
-    TokenResponse
+    UserResponse,
+    Token
 )
 
 from app.services.auth_service import (
     register_user,
     login_user
 )
-
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
@@ -40,7 +40,7 @@ def register(
         )
 @router.post(
     "/login",
-    response_model=TokenResponse
+    response_model=Token
 )
 def login(
     user: UserLogin,

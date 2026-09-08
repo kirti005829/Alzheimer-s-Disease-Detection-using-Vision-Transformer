@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException, status
 from app.models import User
 from app.schemas import UserRegister
+from sqlalchemy.exc import IntegrityError
 from app.security import (
     hash_password,
     verify_password,
@@ -11,6 +12,18 @@ from app.security import (
 
 def register_user(user: UserRegister, db: Session):
 
+    existing_username = (
+        db.query(User)
+        .filter(User.username == user.username)
+        .first()
+)
+
+    if existing_username:
+
+        raise HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail="Username already exists."
+    )
     existing_user = (
         db.query(User)
         .filter(User.email == user.email)
@@ -18,17 +31,33 @@ def register_user(user: UserRegister, db: Session):
     )
 
     if existing_user:
-        raise ValueError("Email already registered")
+
+        raise HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail="Email already registered."
+    )
+    hashed_password = hash_password(
+    user.password
+)
 
     new_user = User(
-        username=user.username,
-        email=user.email,
-        hashed_password=hash_password(user.password)
-    )
+    username=user.username,
+    email=user.email,
+    hashed_password=hashed_password
+)
 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+    except IntegrityError:
+        db.rollback()
+    
+        raise HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail="Username or Email already exists."
+    )
 
     return new_user
 

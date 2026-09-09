@@ -34,13 +34,16 @@ def predict(image):
     image = test_transform(image).unsqueeze(0).to(DEVICE)
 
     with torch.no_grad():
-
+    
         output = model(image)
-
+    
         probability = torch.softmax(output, dim=1)
-
+    
         confidence, prediction = torch.max(probability, dim=1)
-
+    
+        print("Raw prediction index:", prediction.item())
+        print("Probabilities:", probability.cpu().numpy())
+    
     return {
         "prediction": CLASS_NAMES[prediction.item()],
         "confidence": round(confidence.item() * 100, 2)

@@ -1,25 +1,38 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from jose import jwt
 from passlib.context import CryptContext
-
+from fastapi.security import OAuth2PasswordBearer
 
 SECRET_KEY = "THIS_CAN_BE_CHANGED_LATER"
-
 ALGORITHM = "HS256"
-
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
-
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
 )
+
+# IMPORTANT: Swagger will use this endpoint
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/token"
+)
+
+
 def hash_password(password: str):
     return pwd_context.hash(password)
-def verify_password(plain_password,hashed_password):
-    return pwd_context.verify(plain_password,hashed_password)
+
+
+def verify_password(
+    plain_password,
+    hashed_password
+):
+    return pwd_context.verify(
+        plain_password,
+        hashed_password
+    )
+
+
 def create_access_token(data: dict):
 
     to_encode = data.copy()
@@ -39,27 +52,12 @@ def create_access_token(data: dict):
         SECRET_KEY,
         algorithm=ALGORITHM
     )
+
+
 def verify_token(token: str):
 
     return jwt.decode(
         token,
         SECRET_KEY,
         algorithms=[ALGORITHM]
-    )
-# security.py
-
-from passlib.context import CryptContext
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
-
-def hash_password(password: str):
-    return pwd_context.hash(password)
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(
-        plain_password,
-        hashed_password
     )

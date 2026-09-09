@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from app.routers import dashboard
 from app.database import Base
 from app.database import engine
 
@@ -19,3 +19,4 @@ app.include_router(auth.router)
 app.include_router(predict.router)
 app.include_router(history.router)
 app.include_router(gradcam.router) 
+app.include_router(dashboard.router)

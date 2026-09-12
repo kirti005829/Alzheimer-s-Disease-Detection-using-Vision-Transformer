@@ -27,7 +27,7 @@ class PredictionHistoryResponse(BaseModel):
 
     id: int
 
-    image_name: str
+    filename: str
 
     prediction: str
 

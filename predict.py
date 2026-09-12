@@ -73,8 +73,6 @@ def main():
 
     pred, conf, probs = predict(args.image)
 
-    print("\n========== Prediction ==========\n")
-
     print(
         f"Predicted Class : {CLASS_NAMES[pred]}"
     )

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 
-from app.schemas import PredictionResponse
+from app.schemas import PredictionHistoryResponse
 
 from app.services.history_service import (
     get_prediction_history,
@@ -22,7 +22,7 @@ router = APIRouter(
 
 @router.get(
     "/",
-    response_model=list[PredictionResponse]
+    response_model=list[PredictionHistoryResponse]
 )
 def history(
     current_user=Depends(get_current_user),

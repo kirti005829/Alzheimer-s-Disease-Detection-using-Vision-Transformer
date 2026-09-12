@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from app.models import Prediction
+from app.models import PredictionHistory
 
 
 def get_dashboard_statistics(
@@ -10,9 +10,9 @@ def get_dashboard_statistics(
 ):
 
     predictions = (
-        db.query(Prediction.prediction, func.count(Prediction.id))
-        .filter(Prediction.user_id == user_id)
-        .group_by(Prediction.prediction)
+        db.query(PredictionHistory.prediction, func.count(PredictionHistory.id))
+        .filter(PredictionHistory.user_id == user_id)
+        .group_by(PredictionHistory.prediction)
         .all()
     )
 

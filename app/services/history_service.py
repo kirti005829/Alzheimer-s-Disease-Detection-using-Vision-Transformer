@@ -13,7 +13,7 @@ def save_prediction(
 
     history = PredictionHistory(
         user_id=user_id,
-        image_name=filename,
+        filename=filename,
         prediction=prediction,
         confidence=confidence
     )
@@ -36,3 +36,21 @@ def get_prediction_history(
         .order_by(PredictionHistory.created_at.desc())
         .all()
     )
+def delete_prediction(db: Session, prediction_id: int, user_id: int):
+
+    prediction = (
+        db.query(PredictionHistory)
+        .filter(
+            PredictionHistory.id == prediction_id,
+            PredictionHistory.user_id == user_id
+        )
+        .first()
+    )
+
+    if prediction is None:
+        return False
+
+    db.delete(prediction)
+    db.commit()
+
+    return True

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models import Prediction
+from app.models import PredictionHistory
 
 
 def save_prediction(
@@ -10,7 +10,7 @@ def save_prediction(
     confidence: float
 ):
 
-    prediction_record = Prediction(
+    prediction_record = PredictionHistory(
         user_id=user_id,
         filename=filename,
         prediction=prediction,
@@ -28,9 +28,9 @@ def get_prediction_history(
 ):
 
     return (
-        db.query(Prediction)
-        .filter(Prediction.user_id == user_id)
-        .order_by(Prediction.created_at.desc())
+        db.query(PredictionHistory)
+        .filter(PredictionHistory.user_id == user_id)
+        .order_by(PredictionHistory.created_at.desc())
         .all()
     )
 
@@ -42,10 +42,10 @@ def delete_prediction(
 ):
 
     prediction = (
-        db.query(Prediction)
+        db.query(PredictionHistory)
         .filter(
-            Prediction.id == prediction_id,
-            Prediction.user_id == user_id
+            PredictionHistory.id == prediction_id,
+            PredictionHistory.user_id == user_id
         )
         .first()
     )

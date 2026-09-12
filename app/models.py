@@ -49,7 +49,7 @@ class PredictionHistory(Base):
         ForeignKey("users.id")
     )
 
-    image_name = Column(
+    filename = Column(
         String,
         nullable=False
     )

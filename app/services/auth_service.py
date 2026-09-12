@@ -62,7 +62,32 @@ def register_user(user: UserRegister, db: Session):
     return new_user
 
 
+#def login_user(email: str, password: str, db: Session):
+#
+#    user = (
+#        db.query(User)
+#        .filter(User.email == email)
+#        .first()
+#    )
+#
+#    if user is None:
+#        raise ValueError("Invalid Email")
+#
+#    if not verify_password(
+#        password,
+#        user.hashed_password
+#    ):
+#        raise ValueError("Incorrect Password")
+#
+#    token = create_access_token(
+#        {"sub": user.email}
+#    )
+#
+#    return token
 def login_user(email: str, password: str, db: Session):
+
+    print("=" * 50)
+    print("Email received:", email)
 
     user = (
         db.query(User)
@@ -70,17 +95,15 @@ def login_user(email: str, password: str, db: Session):
         .first()
     )
 
+    print("User found:", user)
+    print("=" * 50)
+
     if user is None:
         raise ValueError("Invalid Email")
 
-    if not verify_password(
-        password,
-        user.hashed_password
-    ):
+    if not verify_password(password, user.hashed_password):
         raise ValueError("Incorrect Password")
 
-    token = create_access_token(
-        {"sub": user.email}
-    )
+    token = create_access_token({"sub": user.email})
 
     return token
